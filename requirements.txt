@@ -1,1 +1,11 @@
 streamlit
+streamlit-oauth
+streamlit-cookies-manager
+python-dotenv
+boto3
+pydantic==2.7.1
+pydantic-settings==2.2.1
+pydantic_core==2.18.2
+psycopg[binary]
+sqlalchemy
+pandas
