@@ -2,16 +2,16 @@
 import base64
 import json
 import os
+import logging
 from dotenv import load_dotenv
 import streamlit as st
 from streamlit_cookies_manager import EncryptedCookieManager
 from streamlit_oauth import OAuth2Component
 from urllib.parse import urlunparse
+from utils.settings import settings
 
 load_dotenv()
 
-CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
-CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 AUTHORIZE_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth"
 TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token"
 REVOKE_ENDPOINT = "https://oauth2.googleapis.com/revoke"
@@ -24,8 +24,12 @@ if not cookies.ready():
     st.stop()
 
 def get_url():
+    # inspired by https://github.com/streamlit/streamlit/issues/798\#issuecomment-1647759949
     session = st.runtime.get_instance()._session_mgr.list_active_sessions()[0]
     protocol = 'https' if 'localhost' not in session.client.request.host else 'http'
+    logging.info(f'new protocol={protocol}, old protocol={session.client.request.protocol}')
+    logging.info(f'host={session.client.request.host}')
+    logging.info(f'url={urlunparse([protocol, session.client.request.host, "", "", "", ""])}')
     return urlunparse([protocol, session.client.request.host, "", "", "", ""])
 
 def check_auth():
@@ -44,7 +48,9 @@ def auth_token():
     return st.session_state.get("auth", str(cookies["auth_token"]))
 
 def login():
-    oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_ENDPOINT, TOKEN_ENDPOINT, TOKEN_ENDPOINT, REVOKE_ENDPOINT)
+    oauth2 = OAuth2Component(
+        settings.GOOGLE_CLIENT_ID, settings.GOOGLE_CLIENT_SECRET, 
+        AUTHORIZE_ENDPOINT, TOKEN_ENDPOINT, TOKEN_ENDPOINT, REVOKE_ENDPOINT)
     result = oauth2.authorize_button(
         name="Continue with Google",
         icon="https://www.google.com.tw/favicon.ico",

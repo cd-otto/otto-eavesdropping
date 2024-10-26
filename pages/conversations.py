@@ -1,8 +1,8 @@
 import streamlit as st
-from settings import settings
+from utils.settings import settings
 import pandas as pd
 from sqlalchemy import create_engine
-from utils.oauth import check_auth, login
+from utils.oauth import check_auth
 
 
 @st.cache_resource
