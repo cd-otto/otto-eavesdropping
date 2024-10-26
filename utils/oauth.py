@@ -25,6 +25,7 @@ if not cookies.ready():
 
 def get_url():
     session = st.runtime.get_instance()._session_mgr.list_active_sessions()[0]
+    protocol = 'https' if 'localhost' not in session.client.request.host else 'http'
     return urlunparse([session.client.request.protocol, session.client.request.host, "", "", "", ""])
 
 def check_auth():
