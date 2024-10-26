@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import streamlit as st
 from streamlit_cookies_manager import EncryptedCookieManager
 from streamlit_oauth import OAuth2Component
-
+from urllib.parse import urlunparse
 
 load_dotenv()
 
@@ -22,6 +22,10 @@ cookies = EncryptedCookieManager(
 )
 if not cookies.ready():
     st.stop()
+
+def get_url():
+    session = st.runtime.get_instance()._session_mgr.list_active_sessions()[0]
+    return urlunparse([session.client.request.protocol, session.client.request.host, "", "", "", ""])
 
 def check_auth():
     if "auth" not in st.session_state and not ("auth_email" in cookies.keys() and str(cookies["auth_email"])):
@@ -43,7 +47,7 @@ def login():
     result = oauth2.authorize_button(
         name="Continue with Google",
         icon="https://www.google.com.tw/favicon.ico",
-        redirect_uri=st.server.request.host_url,
+        redirect_uri=get_url(), # st.server.request.host_url is not available on cloud
         scope="openid email profile",
         key="google",
         extras_params={"prompt": "consent", "access_type": "offline"},
