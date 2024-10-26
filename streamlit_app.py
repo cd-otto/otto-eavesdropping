@@ -15,8 +15,8 @@ else:
     logging.basicConfig(level=logging.WARN)
 
 pg = st.navigation([
-    st.Page(main, title="Main", icon=":material/home:"),
-    st.Page(travelers_inspector, title="Traveler Inspector", icon=":material/detection_and_zone:"),
-    st.Page(conversation_inspector, title="Conversation Inspector", icon=":material/pageview:"),
+    st.Page("pages/main.py", title="Main", icon=":material/home:"),
+    st.Page("pages/travelers.py", title="Traveler Inspector", icon=":material/detection_and_zone:"),
+    st.Page("pages/conversations.py", title="Conversation Inspector", icon=":material/pageview:"),
 ])
 pg.run()

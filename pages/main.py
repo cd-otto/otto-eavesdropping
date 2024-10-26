@@ -11,5 +11,4 @@ def main():
     st.write(f"Welcome, {auth_email()}!")
     logout()
 
-if __name__ == "__main__":
-    main()
+main()

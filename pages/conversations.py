@@ -41,10 +41,12 @@ def conversation_inspector():
                         avatar = ':material/function:'
                     
                     with st.chat_message(name=msg['type'], avatar=avatar):
-                        st.write(msg['data']['content'])
+                        if msg['data']['content'] and msg['type'] == 'function':
+                            st.json(msg['data']['content'])
+                        else:
+                            st.write(msg['data']['content'])
                         st.json(msg, expanded=False)
             except Exception as e:
                 st.error(f"An error occurred: {e}")
 
-if __name__ == "__main__":
-    conversation_inspector()
+conversation_inspector()
